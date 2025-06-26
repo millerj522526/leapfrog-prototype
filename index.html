@@ -54,8 +54,19 @@
             text-decoration: none;
         }
     </style>
-<link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet"/><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script></head>
+</head>
 <body>
+<select id="dayFilter" onchange="filterByDay()">
+<option value="All">All Days</option>
+<option value="Monday">Monday</option>
+<option value="Tuesday">Tuesday</option>
+<option value="Wednesday">Wednesday</option>
+<option value="Thursday">Thursday</option>
+<option value="Friday">Friday</option>
+<option value="Saturday">Saturday</option>
+<option value="Sunday">Sunday</option>
+</select>
+
 <div class="filter-bar">
 <select id="live-dj">
 <option value="">Live/DJ</option>
@@ -112,7 +123,7 @@
                 description: "A great night of live jazz music.",
                 venue: "Example Venue",
                 suburb: "Fitzroy",
-                instagram: "https://instagram.com/jerry._.band"
+                instagram: "https://instagram.com/example"
             }
         ];
 
@@ -134,54 +145,48 @@
             showEventPopup(events[0]);
         });
     </script>
-<div id="map" style="height: 400px;"></div><script>
-var map = L.map('map').setView([-37.803, 144.978], 13); // Fitzroy coordinates
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+<script>
+  var map = L.map('map').setView([-37.813, 144.962], 13); // Centered on Melbourne
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+  }).addTo(map);
 
-var venues = [
-    {
-        name: "Punters Club",
-        coords: [-37.803, 144.978],
-        address: "Brunswick Street, Fitzroy",
-        events: [
-            {date: "Monday", time: "8 PM", genre: "Rock", description: "Live Rock Music"},
-            {date: "Wednesday", time: "9 PM", genre: "Jazz", description: "Jazz Night"}
-        ],
-        instagram: "https://www.instagram.com/jerry._.band"
-    },
-    {
-        name: "The Night Cat",
-        coords: [-37.802, 144.978],
-        address: "Fitzroy",
-        events: [
-            {date: "Tuesday", time: "7 PM", genre: "Hip Hop", description: "Hip Hop Beats"},
-            {date: "Friday", time: "10 PM", genre: "Electronic", description: "Electronic Dance"}
-        ],
-        instagram: "https://www.instagram.com/jerry._.band"
-    },
-    {
-        name: "Bar Open",
-        coords: [-37.804, 144.978],
-        address: "Fitzroy",
-        events: [
-            {date: "Thursday", time: "8 PM", genre: "Indie", description: "Indie Music Night"},
-            {date: "Saturday", time: "9 PM", genre: "Folk", description: "Folk Music"}
-        ],
-        instagram: "https://www.instagram.com/jerry._.band"
-    }
-];
+  var venues = [{'name': 'Punters Club', 'coordinates': [-37.798, 144.978], 'address': 'Brunswick Street, Fitzroy', 'events': [{'day': 'Monday', 'time': '8:00 PM', 'genre': 'Rock', 'description': 'Live Rock Music'}, {'day': 'Wednesday', 'time': '9:00 PM', 'genre': 'Jazz', 'description': 'Jazz Night'}], 'instagram': 'https://www.instagram.com/puntersclub'}, {'name': 'The Night Cat', 'coordinates': [-37.8, 144.978], 'address': 'Fitzroy, Melbourne', 'events': [{'day': 'Tuesday', 'time': '7:00 PM', 'genre': 'Hip-Hop', 'description': 'Hip-Hop Jam'}, {'day': 'Friday', 'time': '10:00 PM', 'genre': 'Electronic', 'description': 'Electronic Dance Party'}], 'instagram': 'https://www.instagram.com/thenightcat'}, {'name': 'Bar Open', 'coordinates': [-37.802, 144.978], 'address': 'Fitzroy, Melbourne', 'events': [{'day': 'Thursday', 'time': '8:00 PM', 'genre': 'Indie', 'description': 'Indie Music Night'}, {'day': 'Saturday', 'time': '9:00 PM', 'genre': 'Reggae', 'description': 'Reggae Party'}], 'instagram': 'https://www.instagram.com/baropen'}, {'name': 'Revolver Upstairs', 'coordinates': [-37.846, 144.978], 'address': 'Chapel Street, Prahran', 'events': [{'day': 'Sunday', 'time': '6:00 PM', 'genre': 'House', 'description': 'House Music Night'}, {'day': 'Thursday', 'time': '8:00 PM', 'genre': 'Techno', 'description': 'Techno Party'}], 'instagram': 'https://www.instagram.com/revolverupstairs'}, {'name': 'Section 8', 'coordinates': [-37.813, 144.962], 'address': 'Tattersalls Lane, Melbourne', 'events': [{'day': 'Wednesday', 'time': '7:00 PM', 'genre': 'Funk', 'description': 'Funk Night'}, {'day': 'Saturday', 'time': '10:00 PM', 'genre': 'Hip-Hop', 'description': 'Hip-Hop Party'}], 'instagram': 'https://www.instagram.com/section8melbourne'}];
 
-venues.forEach(function(venue) {
-    var marker = L.marker(venue.coords).addTo(map);
-    var popupContent = '<b>' + venue.name + '</b><br>' + venue.address + '<br><br>';
-    venue.events.forEach(function(event) {
-        popupContent += '<b>' + event.date + '</b>: ' + event.time + ' - ' + event.genre + '<br>' + event.description + '<br><br>';
-    });
-    popupContent += '<a href="' + venue.instagram + '" target="_blank">Instagram</a>';
+  venues.forEach(function(venue) {
+    var marker = L.marker(venue.coordinates).addTo(map);
+    var popupContent = '<b>' + venue.name + '</b><br>' + venue.address + '<br><br>' +
+                       'Events:<br>' + venue.events.map(function(event) {
+                         return event.day + ' - ' + event.time + ' - ' + event.genre + '<br>' + event.description;
+                       }).join('<br>') + '<br><br>' +
+                       '<a href="' + venue.instagram + '" target="_blank">Instagram</a>';
     marker.bindPopup(popupContent);
-});
-</script></body>
+  });
+
+  function filterByDay() {
+    var selectedDay = document.getElementById('dayFilter').value;
+    map.eachLayer(function(layer) {
+      if (layer instanceof L.Marker) {
+        map.removeLayer(layer);
+      }
+    });
+    venues.forEach(function(venue) {
+      var hasEventOnSelectedDay = venue.events.some(function(event) {
+        return selectedDay === 'All' || event.day === selectedDay;
+      });
+      if (hasEventOnSelectedDay) {
+        var marker = L.marker(venue.coordinates).addTo(map);
+        var popupContent = '<b>' + venue.name + '</b><br>' + venue.address + '<br><br>' +
+                           'Events:<br>' + venue.events.map(function(event) {
+                             return event.day + ' - ' + event.time + ' - ' + event.genre + '<br>' + event.description;
+                           }).join('<br>') + '<br><br>' +
+                           '<a href="' + venue.instagram + '" target="_blank">Instagram</a>';
+        marker.bindPopup(popupContent);
+      }
+    });
+  }
+</script>
+</body>
 </html>
