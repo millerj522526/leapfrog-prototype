@@ -1,11 +1,12 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leapfrog Prototype</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Leapfrog Prototype</title>
+<style>
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -53,53 +54,53 @@
             text-decoration: none;
         }
     </style>
-</head>
+<link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet"/><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script></head>
 <body>
-    <div class="filter-bar">
-        <select id="live-dj">
-            <option value="">Live/DJ</option>
-            <option value="live">Live</option>
-            <option value="dj">DJ</option>
-        </select>
-        <select id="genre">
-            <option value="">Genre</option>
-            <option value="jazz">Jazz</option>
-            <option value="rock">Rock</option>
-            <option value="pop">Pop</option>
-        </select>
-        <select id="cost">
-            <option value="">Free/Ticketed</option>
-            <option value="free">Free</option>
-            <option value="ticketed">Ticketed</option>
-        </select>
-        <select id="day">
-            <option value="">Day</option>
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="friday">Friday</option>
-            <option value="saturday">Saturday</option>
-            <option value="sunday">Sunday</option>
-        </select>
-        <select id="suburb">
-            <option value="">Suburb</option>
-            <option value="fitzroy">Fitzroy</option>
-            <option value="cbd">CBD</option>
-            <option value="northcote">Northcote</option>
-        </select>
-    </div>
-    <div id="map"></div>
-    <div class="event-popup" id="event-popup">
-        <h3>Event Name</h3>
-        <p>Artist: Example Artist (Live)</p>
-        <p>Time: 8pm - 10pm</p>
-        <p>Genre: Jazz</p>
-        <p>Description: A great night of live jazz music.</p>
-        <p>Venue: Example Venue, Fitzroy</p>
-        <a href="https://instagram.com/example">Instagram Link</a>
-    </div>
-    <script>
+<div class="filter-bar">
+<select id="live-dj">
+<option value="">Live/DJ</option>
+<option value="live">Live</option>
+<option value="dj">DJ</option>
+</select>
+<select id="genre">
+<option value="">Genre</option>
+<option value="jazz">Jazz</option>
+<option value="rock">Rock</option>
+<option value="pop">Pop</option>
+</select>
+<select id="cost">
+<option value="">Free/Ticketed</option>
+<option value="free">Free</option>
+<option value="ticketed">Ticketed</option>
+</select>
+<select id="day">
+<option value="">Day</option>
+<option value="monday">Monday</option>
+<option value="tuesday">Tuesday</option>
+<option value="wednesday">Wednesday</option>
+<option value="thursday">Thursday</option>
+<option value="friday">Friday</option>
+<option value="saturday">Saturday</option>
+<option value="sunday">Sunday</option>
+</select>
+<select id="suburb">
+<option value="">Suburb</option>
+<option value="fitzroy">Fitzroy</option>
+<option value="cbd">CBD</option>
+<option value="northcote">Northcote</option>
+</select>
+</div>
+<div id="map"></div>
+<div class="event-popup" id="event-popup">
+<h3>Event Name</h3>
+<p>Artist: Example Artist (Live)</p>
+<p>Time: 8pm - 10pm</p>
+<p>Genre: Jazz</p>
+<p>Description: A great night of live jazz music.</p>
+<p>Venue: Example Venue, Fitzroy</p>
+<a href="https://instagram.com/example">Instagram Link</a>
+</div>
+<script>
         // Sample data for events
         const events = [
             {
@@ -133,43 +134,54 @@
             showEventPopup(events[0]);
         });
     </script>
+<div id="map" style="height: 400px;"></div><script>
+var map = L.map('map').setView([-37.803, 144.978], 13); // Fitzroy coordinates
 
-    <script>
-        var map = L.map('map').setView([-37.803, 144.978], 13); // Fitzroy coordinates
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+var venues = [
+    {
+        name: "Punters Club",
+        coords: [-37.803, 144.978],
+        address: "Brunswick Street, Fitzroy",
+        events: [
+            {date: "Monday", time: "8 PM", genre: "Rock", description: "Live Rock Music"},
+            {date: "Wednesday", time: "9 PM", genre: "Jazz", description: "Jazz Night"}
+        ],
+        instagram: "https://www.instagram.com/puntersclub"
+    },
+    {
+        name: "The Night Cat",
+        coords: [-37.802, 144.978],
+        address: "Fitzroy",
+        events: [
+            {date: "Tuesday", time: "7 PM", genre: "Hip Hop", description: "Hip Hop Beats"},
+            {date: "Friday", time: "10 PM", genre: "Electronic", description: "Electronic Dance"}
+        ],
+        instagram: "https://www.instagram.com/thenightcat"
+    },
+    {
+        name: "Bar Open",
+        coords: [-37.804, 144.978],
+        address: "Fitzroy",
+        events: [
+            {date: "Thursday", time: "8 PM", genre: "Indie", description: "Indie Music Night"},
+            {date: "Saturday", time: "9 PM", genre: "Folk", description: "Folk Music"}
+        ],
+        instagram: "https://www.instagram.com/baropen"
+    }
+];
 
-        
-    L.marker([-37.798, 144.978]).addTo(map)
-        .bindPopup('
-    <b>Punters Club</b><br>
-    Brunswick Street, Fitzroy<br>
-    <ul><li>2023-09-15 - 8:00 PM - Rock - Live rock performance</li><li>2023-09-16 - 9:00 PM - Jazz - Smooth jazz night</li></ul>
-    <a href="https://instagram.com/puntersclub" target="_blank">Instagram</a>
-    ')
-        .on('mouseover', function(e) { this.openPopup(); });
-    
-    L.marker([-37.8, 144.978]).addTo(map)
-        .bindPopup('
-    <b>The Night Cat</b><br>
-    Fitzroy<br>
-    <ul><li>2023-09-17 - 10:00 PM - Electronic - DJ night</li><li>2023-09-18 - 7:00 PM - Blues - Blues evening</li></ul>
-    <a href="https://instagram.com/thenightcat" target="_blank">Instagram</a>
-    ')
-        .on('mouseover', function(e) { this.openPopup(); });
-    
-    L.marker([-37.802, 144.978]).addTo(map)
-        .bindPopup('
-    <b>Bar Open</b><br>
-    Fitzroy<br>
-    <ul><li>2023-09-19 - 6:00 PM - Indie - Indie music night</li><li>2023-09-20 - 8:00 PM - Hip-Hop - Hip-Hop showcase</li></ul>
-    <a href="https://instagram.com/baropen" target="_blank">Instagram</a>
-    ')
-        .on('mouseover', function(e) { this.openPopup(); });
-    
-    </script>
-    </body>
-    
+venues.forEach(function(venue) {
+    var marker = L.marker(venue.coords).addTo(map);
+    var popupContent = '<b>' + venue.name + '</b><br>' + venue.address + '<br><br>';
+    venue.events.forEach(function(event) {
+        popupContent += '<b>' + event.date + '</b>: ' + event.time + ' - ' + event.genre + '<br>' + event.description + '<br><br>';
+    });
+    popupContent += '<a href="' + venue.instagram + '" target="_blank">Instagram</a>';
+    marker.bindPopup(popupContent);
+});
+</script></body>
 </html>
