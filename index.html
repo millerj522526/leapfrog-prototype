@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leapfrog - Music Discovery</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        .filter-bar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .filter-bar select, .filter-bar input {
+            margin: 5px;
+        }
+        .popup {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .popup h3 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="filter-bar">
+        <select id="type-filter">
+            <option value="">Live/DJ</option>
+            <option value="live">Live</option>
+            <option value="dj">DJ</option>
+        </select>
+        <select id="genre-filter">
+            <option value="">Genre</option>
+            <option value="jazz">Jazz</option>
+            <option value="rock">Rock</option>
+            <option value="electronic">Electronic</option>
+        </select>
+        <select id="cost-filter">
+            <option value="">Free/Ticketed</option>
+            <option value="free">Free</option>
+            <option value="ticketed">Ticketed</option>
+        </select>
+        <select id="day-filter">
+            <option value="">Day</option>
+            <option value="monday">Monday</option>
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="friday">Friday</option>
+            <option value="saturday">Saturday</option>
+            <option value="sunday">Sunday</option>
+        </select>
+        <select id="suburb-filter">
+            <option value="">Suburb</option>
+            <option value="fitzroy">Fitzroy</option>
+            <option value="northcote">Northcote</option>
+            <option value="cbd">CBD</option>
+        </select>
+    </div>
+    <div class="popup" id="popup">
+        <h3 id="popup-title"></h3>
+        <p id="popup-details"></p>
+        <a id="popup-link" href="" target="_blank">Instagram</a>
+    </div>
+    <script>
+        // Sample data for venues and gigs
+        const venues = [
+            {
+                name: "Zsa's Bar & Bistroeca",
+                lat: -37.798,
+                lng: 144.978,
+                events: [
+                    {
+                        name: "Aperitivo Hour",
+                        type: "live",
+                        genre: "jazz",
+                        cost: "free",
+                        day: "friday",
+                        suburb: "fitzroy",
+                        details: "Drink specials and food menu highlights",
+                        instagram: "https://instagram.com/zsasbar"
+                    }
+                ]
+            },
+            {
+                name: "Punters Club",
+                lat: -37.798,
+                lng: 144.978,
+                events: [
+                    {
+                        name: "Rick Howe DJ set",
+                        type: "dj",
+                        genre: "electronic",
+                        cost: "ticketed",
+                        day: "friday",
+                        suburb: "fitzroy",
+                        details: "Electronic music DJ set",
+                        instagram: "https://instagram.com/puntersclub"
+                    },
+                    {
+                        name: "Jerry Live",
+                        type: "live",
+                        genre: "rock",
+                        cost: "free",
+                        day: "friday",
+                        suburb: "fitzroy",
+                        details: "Live rock performance",
+                        instagram: "https://instagram.com/puntersclub"
+                    }
+                ]
+            }
+        ];
+
+        // Initialize map
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -37.8136, lng: 144.9631 },
+                zoom: 12
+            });
+
+            // Add markers to map
+            venues.forEach(venue => {
+                const marker = new google.maps.Marker({
+                    position: { lat: venue.lat, lng: venue.lng },
+                    map: map,
+                    title: venue.name
+                });
+
+                // Add click event to marker
+                marker.addListener("click", () => {
+                    const event = venue.events[0]; // For simplicity, show the first event
+                    document.getElementById("popup-title").innerText = event.name;
+                    document.getElementById("popup-details").innerText = event.details;
+                    document.getElementById("popup-link").href = event.instagram;
+                    document.getElementById("popup").style.display = "block";
+                });
+            });
+        }
+
+        // Load Google Maps script
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap";
+        script.async = true;
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
