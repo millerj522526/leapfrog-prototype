@@ -133,5 +133,25 @@
             showEventPopup(events[0]);
         });
     </script>
+
+<!-- Add this in your <head> -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Add this in your <body> -->
+<div id="map" style="height: 400px;"></div>
+
+<script>
+  var map = L.map('map').setView([-37.803, 144.978], 13); // Fitzroy coordinates
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  L.marker([-37.803, 144.978]).addTo(map)
+    .bindPopup('Example Venue, Fitzroy')
+    .openPopup();
+</script>
+
 </body>
 </html>
