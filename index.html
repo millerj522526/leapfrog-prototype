@@ -4,64 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leapfrog - Music Discovery</title>
+    <title>Leapfrog Prototype</title>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
+        body {
             font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         #map {
-            height: 100%;
             width: 100%;
+            height: 80vh;
+            background-image: url('https://via.placeholder.com/800x600?text=Static+Map+Placeholder');
+            background-size: cover;
+            background-position: center;
         }
         .filter-bar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
         }
-        .filter-bar select, .filter-bar input {
-            margin: 5px;
+        .filter-bar select {
+            margin: 0 5px;
+            padding: 5px;
         }
-        .popup {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        .event-popup {
             display: none;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .popup h3 {
+        .event-popup h3 {
             margin: 0;
+        }
+        .event-popup p {
+            margin: 5px 0;
+        }
+        .event-popup a {
+            color: #007BFF;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
     <div class="filter-bar">
-        <select id="type-filter">
+        <select id="live-dj">
             <option value="">Live/DJ</option>
             <option value="live">Live</option>
             <option value="dj">DJ</option>
         </select>
-        <select id="genre-filter">
+        <select id="genre">
             <option value="">Genre</option>
             <option value="jazz">Jazz</option>
             <option value="rock">Rock</option>
-            <option value="electronic">Electronic</option>
+            <option value="pop">Pop</option>
         </select>
-        <select id="cost-filter">
+        <select id="cost">
             <option value="">Free/Ticketed</option>
             <option value="free">Free</option>
             <option value="ticketed">Ticketed</option>
         </select>
-        <select id="day-filter">
+        <select id="day">
             <option value="">Day</option>
             <option value="monday">Monday</option>
             <option value="tuesday">Tuesday</option>
@@ -71,98 +82,56 @@
             <option value="saturday">Saturday</option>
             <option value="sunday">Sunday</option>
         </select>
-        <select id="suburb-filter">
+        <select id="suburb">
             <option value="">Suburb</option>
             <option value="fitzroy">Fitzroy</option>
-            <option value="northcote">Northcote</option>
             <option value="cbd">CBD</option>
+            <option value="northcote">Northcote</option>
         </select>
     </div>
-    <div class="popup" id="popup">
-        <h3 id="popup-title"></h3>
-        <p id="popup-details"></p>
-        <a id="popup-link" href="" target="_blank">Instagram</a>
+    <div id="map"></div>
+    <div class="event-popup" id="event-popup">
+        <h3>Event Name</h3>
+        <p>Artist: Example Artist (Live)</p>
+        <p>Time: 8pm - 10pm</p>
+        <p>Genre: Jazz</p>
+        <p>Description: A great night of live jazz music.</p>
+        <p>Venue: Example Venue, Fitzroy</p>
+        <a href="https://instagram.com/example">Instagram Link</a>
     </div>
     <script>
-        // Sample data for venues and gigs
-        const venues = [
+        // Sample data for events
+        const events = [
             {
-                name: "Zsa's Bar & Bistroeca",
-                lat: -37.798,
-                lng: 144.978,
-                events: [
-                    {
-                        name: "Aperitivo Hour",
-                        type: "live",
-                        genre: "jazz",
-                        cost: "free",
-                        day: "friday",
-                        suburb: "fitzroy",
-                        details: "Drink specials and food menu highlights",
-                        instagram: "https://instagram.com/zsasbar"
-                    }
-                ]
-            },
-            {
-                name: "Punters Club",
-                lat: -37.798,
-                lng: 144.978,
-                events: [
-                    {
-                        name: "Rick Howe DJ set",
-                        type: "dj",
-                        genre: "electronic",
-                        cost: "ticketed",
-                        day: "friday",
-                        suburb: "fitzroy",
-                        details: "Electronic music DJ set",
-                        instagram: "https://instagram.com/puntersclub"
-                    },
-                    {
-                        name: "Jerry Live",
-                        type: "live",
-                        genre: "rock",
-                        cost: "free",
-                        day: "friday",
-                        suburb: "fitzroy",
-                        details: "Live rock performance",
-                        instagram: "https://instagram.com/puntersclub"
-                    }
-                ]
+                name: "Jazz Night",
+                artist: "Example Artist",
+                type: "Live",
+                time: "8pm - 10pm",
+                genre: "Jazz",
+                description: "A great night of live jazz music.",
+                venue: "Example Venue",
+                suburb: "Fitzroy",
+                instagram: "https://instagram.com/example"
             }
         ];
 
-        // Initialize map
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: -37.8136, lng: 144.9631 },
-                zoom: 12
-            });
-
-            // Add markers to map
-            venues.forEach(venue => {
-                const marker = new google.maps.Marker({
-                    position: { lat: venue.lat, lng: venue.lng },
-                    map: map,
-                    title: venue.name
-                });
-
-                // Add click event to marker
-                marker.addListener("click", () => {
-                    const event = venue.events[0]; // For simplicity, show the first event
-                    document.getElementById("popup-title").innerText = event.name;
-                    document.getElementById("popup-details").innerText = event.details;
-                    document.getElementById("popup-link").href = event.instagram;
-                    document.getElementById("popup").style.display = "block";
-                });
-            });
+        // Function to show event popup
+        function showEventPopup(event) {
+            const popup = document.getElementById('event-popup');
+            popup.querySelector('h3').innerText = event.name;
+            popup.querySelector('p:nth-of-type(1)').innerText = `Artist: ${event.artist} (${event.type})`;
+            popup.querySelector('p:nth-of-type(2)').innerText = `Time: ${event.time}`;
+            popup.querySelector('p:nth-of-type(3)').innerText = `Genre: ${event.genre}`;
+            popup.querySelector('p:nth-of-type(4)').innerText = `Description: ${event.description}`;
+            popup.querySelector('p:nth-of-type(5)').innerText = `Venue: ${event.venue}, ${event.suburb}`;
+            popup.querySelector('a').href = event.instagram;
+            popup.style.display = 'block';
         }
 
-        // Load Google Maps script
-        const script = document.createElement("script");
-        script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap";
-        script.async = true;
-        document.head.appendChild(script);
+        // Simulate clicking on a map marker to show event popup
+        document.getElementById('map').addEventListener('click', () => {
+            showEventPopup(events[0]);
+        });
     </script>
 </body>
 </html>
